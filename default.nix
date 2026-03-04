@@ -18,6 +18,7 @@
 
   example-package = pkgs.callPackage ./pkgs/example-package { };
   ble-scale-sync = pkgs.callPackage ./pkgs/ble-scale-sync { };
+  sparkyfitness = pkgs.callPackage ./pkgs/sparkyfitness { };
   # some-qt5-package = pkgs.libsForQt5.callPackage ./pkgs/some-qt5-package { };
   # ...
 }
