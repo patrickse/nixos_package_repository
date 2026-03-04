@@ -32,6 +32,20 @@ in
 
       config = mkIf cfg.enable {
 
+        systemd.servics.ble-scale-sync = {
+          wantedBy = [ "multi-user.target" ];
+          serviceConfig = {
+
+          };
+        };
+
+        users.users.blescalesync = {
+          isSystemUser = true;
+          home = cfg.home;
+          createHome = true;
+          group = "blescalesync";
+        };
+
       };
 
     };
