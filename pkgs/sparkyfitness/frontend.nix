@@ -1,18 +1,16 @@
 {
   fetchFromGitHub,
   buildNpmPackage,
-  nodejs_24,
   lib,
   pkgs,
   importNpmLock,
-  callPackage,
   ...
 }:
 
-let
-
+# stdenv.mkDerivation rec {
+buildNpmPackage rec {
+  pname = "SparkyFitness";
   version = "0.16.4.8";
-
   src = fetchFromGitHub {
     owner = "CodeWithCJ";
     repo = "SparkyFitness";
@@ -20,40 +18,25 @@ let
     hash = "sha256-Y1znYdZ7e1vnrduhdxmQeYUIP7N8AlIohg9LynbTx+8=";
   };
 
-  frontend = callPackage ./frontend.nix {
-    inherit src version;
-  };
-in
-buildNpmPackage {
-
-  inherit src;
-
-  pname = "SparkyFitness";
-  name = "SparkyFitness";
   npmDeps = importNpmLock {
-    package = lib.importJSON "${src}/SparkyFitnessServer/package.json";
-    packageLock = lib.importJSON "${src}/SparkyFitnessServer/package-lock.json";
+    package = lib.importJSON "${src}/SparkyFitnessFrontend/package.json";
+    packageLock = lib.importJSON "${src}/SparkyFitnessFrontend/package-lock.json";
   };
 
-  sourceRoot = "source/SparkyFitnessServer";
+  sourceRoot = "source/SparkyFitnessFrontend";
 
   npmConfigHook = pkgs.importNpmLock.npmConfigHook;
 
   nativeBuildInputs = [
-    nodejs_24
+    pkgs.nodejs_24
     pkgs.nodePackages.pnpm
   ];
 
-  buildPhase = ''
-    runHook preBuild
-    runHook postBuild
-  '';
-
   installPhase = ''
     runHook preInstall
-    cp -r . $out
-    mkdir -p $out/static
-    cp -r ${frontend}/*/ $out/static/
+
+    cp -r dist $out
+
     runHook postInstall
   '';
 
